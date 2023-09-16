@@ -1,1 +1,120 @@
+import numpy as np
+
+#define constants
+PROB_INCR_1 = 1
+PROB_INCR_2 = 2
+
+# For each successful bomb, the surrounding squares increase in probability
+def increase_surrounding_correct_bombs(pdf, successful_bombed_positions, failed_bombed_positions):
+    for successful_bomb in successful_bombed_positions:
+        if (successful_bomb[1] + 1) < 10 and \
+        (successful_bomb[0], successful_bomb[1] + 1) not in failed_bombed_positions:
+            pdf[successful_bomb[0], successful_bomb[1] + 1] += PROB_INCR_2
+        if (successful_bomb[1] - 1) > 0 and \
+        (successful_bomb[0], successful_bomb[1] - 1) not in failed_bombed_positions:
+            pdf[successful_bomb[0], successful_bomb[1] - 1] += PROB_INCR_2
+        if (successful_bomb[0] + 1) < 10 and \
+        (successful_bomb[0] + 1, successful_bomb[1]) not in failed_bombed_positions:
+            pdf[successful_bomb[0] + 1, successful_bomb[1]] += PROB_INCR_2
+        if (successful_bomb[0] - 1) > 0 and \
+        (successful_bomb[0] - 1, successful_bomb[1]) not in failed_bombed_positions:
+            pdf[successful_bomb[0] - 1, successful_bomb[1]] += PROB_INCR_2
+    
+    return pdf
+
+def update_probabilities(game_board, ships, failed_bombed_positions, successful_bombed_positions):
+    # Initialize the probability density function
+    pdf = np.zeros_like(game_board)
+    print("Initial board:")
+    print(pdf)
+    
+    # For each successful bomb, the surrounding squares increase in probability
+    increase_surrounding_correct_bombs(pdf, successful_bombed_positions)
+
+    # For each position in the game board
+    # The .shape attribute is a built-in attribute of the numpy ndarray object, 
+    # The .shape attribute of game_board would then automatically be a tuple (board_size, board_size)
+    for i in range(game_board.shape[0]):
+        for j in range(game_board.shape[1]):
+            # If the position has been bombed, skip it
+            if (i, j) in failed_bombed_positions or (i,j) in successful_bombed_positions:
+                pdf[i, j] = 0
+                continue
+
+            # For each ship, check all possible positions for the ship
+            for ship in ships:
+                
+                # vertical down
+                # Check that we are within the bounds of the board
+                # Check that no part of a potential ship placement overlaps with
+                # a bombed position
+                if i + ship <= game_board.shape[0] and \
+                not any ((x,j) in failed_bombed_positions for x in range(i,i+ship)):  
+                    # Increment the probability for each square in the vertical line downwards
+                    # from (i,j)
+                    pdf[i:i+ship, j] += PROB_INCR_1
+                
+                # horizontal right
+                if j + ship <= game_board.shape[1] and \
+                not any((i,y) in failed_bombed_positions for y in range(j,j+ship)):
+                    pdf[i, j:j+ship] += PROB_INCR_1
+                
+                # vertical up
+                if i - ship >= -1 and \
+                not any((x,j) in failed_bombed_positions for x in range(i-ship+1,i+1)):
+                    pdf[i-ship+1:i+1, j] += PROB_INCR_1
+                
+                # horizontal left
+                if j - ship >= -1 and \
+                not any((i,y) in failed_bombed_positions for y in range(j-ship+1,j+1)):
+                    pdf[i, j-ship+1:j+1] += PROB_INCR_1
+
+    return pdf
+
+
+def ShipLogic(round, yourMap, yourHp, enemyHp, p1ShotSeq, p1PrevHit, storage):
+   
+   # Step 1: storage handling
+    failed_bombed_positions = []
+    successful_bombed_positions = []
+    all_bombed_positions = []
+    
+    if p1PrevHit:
+        storage[-1] = (1, storage[-1][1])
+
+    for i in range(len(storage)):
+        all_bombed_positions.append(storage[i][1])
+        if storage[i][0] == 0:
+            failed_bombed_positions.append(storage[i][1])
+        else:
+            successful_bombed_positions.append(storage[i][1])
+
+   
+    #Step 2: update probability
+    # Initialize the game board
+    board_size = 10
+    game_board = np.zeros((board_size,board_size))
+    # Initialize the ships
+    ships = [5, 3, 3, 2, 2]
+    prob_board = update_probabilities(game_board, ships, \
+        failed_bombed_positions, successful_bombed_positions)
+   
+    #Step 3: find highest probability
+    max_coord = np.unravel_index(np.argmax(prob_board), prob_board.shape)
+    #return coord (default status is miss) & append to storage
+    x = max_coord[0]
+    y = max_coord[1]
+    storage.append(0,(x,y))
+    
+    return [x,y], storage
+
+
+
+
+
+
+
+
+
+
 
