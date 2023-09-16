@@ -100,8 +100,8 @@ def ShipLogic(round, yourMap, yourHp, enemyHp, p1ShotSeq, p1PrevHit, storage):
     #Step 3: find highest probability
     max_coord = np.unravel_index(np.argmax(prob_board), prob_board.shape)
     #return coord (default status is miss) & append to storage
-    x = max_coord[0]
-    y = max_coord[1]
+    x = max_coord[1]
+    y = max_coord[0]
     storage.append(0,(x,y))
     
     return [x,y], storage
