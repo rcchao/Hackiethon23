@@ -33,14 +33,16 @@ def update_probabilities(game_board, ships, failed_bombed_positions, successful_
 
     # For each position in the game board
     # The .shape attribute is a built-in attribute of the numpy ndarray object, 
-    # The .shape attribute of game_board would then automatically be a tuple (board_size, board_size)
+    # The .shape attribute of game_board is a tuple (board_size, board_size)
     for i in range(game_board.shape[0]):
         for j in range(game_board.shape[1]):
+            
             # If the position has been bombed, skip it
-            if (i, j) in failed_bombed_positions or (i,j) in successful_bombed_positions:
-                pdf[i, j] = 0
+            if (i, j) in all_bombed_positions:
+                pdf[i, j] = 0;
+                #print(f"The coord 5,5 is: {pdf[5,5]}")
                 continue
-
+                
             # For each ship, check all possible positions for the ship
             for ship in ships:
                 
@@ -49,28 +51,31 @@ def update_probabilities(game_board, ships, failed_bombed_positions, successful_
                 # Check that no part of a potential ship placement overlaps with
                 # a bombed position
                 if i + ship <= game_board.shape[0] and \
-                not any ((x,j) in failed_bombed_positions for x in range(i,i+ship)):  
+                not any ((x,j) in all_bombed_positions for x in range(i,i+ship)):  
                     # Increment the probability for each square in the vertical line downwards
                     # from (i,j)
                     pdf[i:i+ship, j] += PROB_INCR_1
+                    #print(f"The coord 5,5 is: {pdf[5,5]}")
                 
                 # horizontal right
                 if j + ship <= game_board.shape[1] and \
-                not any((i,y) in failed_bombed_positions for y in range(j,j+ship)):
+                not any((i,y) in all_bombed_positions for y in range(j,j+ship)):
                     pdf[i, j:j+ship] += PROB_INCR_1
+                    #print(f"The coord 5,5 is: {pdf[5,5]}")
                 
                 # vertical up
                 if i - ship >= -1 and \
-                not any((x,j) in failed_bombed_positions for x in range(i-ship+1,i+1)):
+                not any((x,j) in all_bombed_positions for x in range(i-ship+1,i+1)):
                     pdf[i-ship+1:i+1, j] += PROB_INCR_1
+                    print(f"The coord 5,5 is: {pdf[5,5]}")
                 
                 # horizontal left
                 if j - ship >= -1 and \
-                not any((i,y) in failed_bombed_positions for y in range(j-ship+1,j+1)):
+                not any((i,y) in all_bombed_positions for y in range(j-ship+1,j+1)):
                     pdf[i, j-ship+1:j+1] += PROB_INCR_1
+                    print(f"The coord 5,5 is: {pdf[5,5]}")
 
     return pdf
-
 
 def ShipLogic(round, yourMap, yourHp, enemyHp, p1ShotSeq, p1PrevHit, storage):
    
