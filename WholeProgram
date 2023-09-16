@@ -2,7 +2,7 @@ import numpy as np
 
 #define constants
 PROB_INCR_1 = 1
-PROB_INCR_2 = 2
+PROB_INCR_2 = 5
 
 # For each successful bomb, the surrounding squares increase in probability
 def increase_surrounding_correct_bombs(pdf, successful_bombed_positions, failed_bombed_positions):
