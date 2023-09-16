@@ -1,7 +1,7 @@
 import numpy as np
 
 #define constants
-PROB_INCR_1 = 10 # This is a magic number
+PROB_INCR_1 = 40 # This is a magic number
 PROB_INCR_2 = 1
 
 # Step 1
