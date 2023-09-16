@@ -94,7 +94,6 @@ def ShipLogic(round, yourMap, yourHp, enemyHp, p1ShotSeq, p1PrevHit, storage):
 
     # Step 2: Increase the probabilities of squares surrounding hits
     # Initialize an all-zero game board
-    board_size = 10
     game_board = np.zeros((10,10))
     updated_board1 = increase_surrounding_correct_bombs(game_board, successful_bombed, all_bombed)
     
