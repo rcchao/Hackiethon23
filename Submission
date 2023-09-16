@@ -80,7 +80,7 @@ def update_probabilities(game_board, ships, all_bombed):
                 
     return game_board
 
-def ShipLogic(p1ShotSeq, p1PrevHit, storage):
+def ShipLogic(round, yourMap, yourHp, enemyHp, p1ShotSeq, p1PrevHit, storage):
    
     # Step 1: storage handling
     successful_bombed = []
@@ -101,8 +101,12 @@ def ShipLogic(p1ShotSeq, p1PrevHit, storage):
     #Step 4: find highest probability
     max_coord = np.unravel_index(np.argmax(prob_board), prob_board.shape)
     #return coord [1-10] (default status is miss) & append to storage [0-9]
-    x = max_coord[1] + 1
-    y = max_coord[0] + 1
-    storage.append((0,(x-1,y-1)))
+    y = max_coord[1] + 1
+    x = max_coord[0] + 1
+    
+    # For code testing (remove):
+    if p1PrevHit:
+        print((x,y))
+        print(prob_board)
     
     return [x,y], storage
