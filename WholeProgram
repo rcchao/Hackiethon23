@@ -108,7 +108,7 @@ def ShipLogic(round, yourMap, yourHp, enemyHp, p1ShotSeq, p1PrevHit, storage):
     
     return [x,y], storage
 
-
+# Main program goes here
 
 
 
