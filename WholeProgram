@@ -72,7 +72,14 @@ def update_probabilities(game_board, ships, successful_bombed_positions, all_bom
 
 def ShipLogic(round, yourMap, yourHp, enemyHp, p1ShotSeq, p1PrevHit, storage):
    
-   # Step 1: storage handling
+   # *** Step 1: storage handling ***
+    # - Upon receiving previous-hit, record its boolean value and location 
+    # as a tuple, storing it in the last index of the 'storage' List. 
+    # - Subsequently, add the previous-hit to the 'all_bombed_positions' list. 
+    # - If the associated boolean value is 1, also include it in the 
+    # 'successful_bombed_positions' list. 
+    # - Whenever a new previous hit is received, overwrite the old one and 
+    # repeat the process.
     successful_bombed_positions = []
     all_bombed_positions = []
     
