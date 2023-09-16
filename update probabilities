@@ -15,15 +15,19 @@ failed_bombed_positions = [(0,0), (3,3), (5,5)]
 successful_bombed_positions = [(9,3)]
 
 # For each successful bomb, the surrounding squares increase in probability
-def increase_surrounding_correct_bombs(pdf, successful_bombed_positions):
+def increase_surrounding_correct_bombs(pdf, successful_bombed_positions, failed_bombed_positions):
     for successful_bomb in successful_bombed_positions:
-        if (successful_bomb[1] + 1) < 10:
+        if (successful_bomb[1] + 1) < 10 and \
+        (successful_bomb[0], successful_bomb[1] + 1) not in failed_bombed_positions:
             pdf[successful_bomb[0], successful_bomb[1] + 1] += PROB_INCR_2
-        if (successful_bomb[1] - 1) > 0:
+        if (successful_bomb[1] - 1) > 0 and \
+        (successful_bomb[0], successful_bomb[1] - 1) not in failed_bombed_positions:
             pdf[successful_bomb[0], successful_bomb[1] - 1] += PROB_INCR_2
-        if (successful_bomb[0] + 1) < 10:
+        if (successful_bomb[0] + 1) < 10 and \
+        (successful_bomb[0] + 1, successful_bomb[1]) not in failed_bombed_positions:
             pdf[successful_bomb[0] + 1, successful_bomb[1]] += PROB_INCR_2
-        if (successful_bomb[0] - 1) > 0:
+        if (successful_bomb[0] - 1) > 0 and \
+        (successful_bomb[0] - 1, successful_bomb[1]) not in failed_bombed_positions:
             pdf[successful_bomb[0] - 1, successful_bomb[1]] += PROB_INCR_2
     
     return pdf
