@@ -5,19 +5,14 @@ PROB_INCR_1 = 70 # This is a magic number
 PROB_INCR_2 = 1
 
 # Step 1
-def storage_handling(successful_bombed, all_bombed, p1PrevHit, storage):
-    # - Upon receiving previous-hit, record its boolean value and location 
-    # as a tuple, storing it in the last index of the 'storage' List. 
-    # - Subsequently, add the previous-hit to the 'all_bombed_positions' list. 
-    # - If the associated boolean value is 1, also include it in the 
-    # 'successful_bombed_positions' list. 
-    # - Whenever a new previous hit is received, overwrite the old one and 
-    # repeat the process.
+def storage_handling(successful_bombed, all_bombed, p1ShotSeq, p1PrevHit, storage):
     
     # Update success status of previous hit
     if p1PrevHit:
-        storage[-1] = (1, storage[-1][1])
-        
+        storage.append((1, (p1ShotSeq[-1][0]-1, p1ShotSeq[-1][1]-1)))
+    else:
+        storage.append((0, (p1ShotSeq[-1][0]-1, p1ShotSeq[-1][1]-1)))
+    
     # Create lists for successful bombs and all prev bombs
     for i in range(len(storage)):
         all_bombed.append(storage[i][1])
@@ -85,12 +80,13 @@ def update_probabilities(game_board, ships, all_bombed):
                 
     return game_board
 
-def ShipLogic(round, yourMap, yourHp, enemyHp, p1ShotSeq, p1PrevHit, storage):
+def ShipLogic(p1ShotSeq, p1PrevHit, storage):
    
     # Step 1: storage handling
     successful_bombed = []
     all_bombed = []
-    storage_handling(successful_bombed, all_bombed, p1PrevHit, storage)
+    if p1ShotSeq:
+        storage_handling(successful_bombed, all_bombed, p1ShotSeq, p1PrevHit, storage)
 
     # Step 2: Increase the probabilities of squares surrounding hits
     # Initialize an all-zero game board
