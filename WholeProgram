@@ -99,7 +99,7 @@ def ShipLogic(round, yourMap, yourHp, enemyHp, p1ShotSeq, p1PrevHit, storage):
     #return coord (default status is miss) & append to storage
     x = max_coord[1]
     y = max_coord[0]
-    storage.append(0,(x,y))
+    storage.append((0,(x,y)))
     
     return [x,y], storage
 
