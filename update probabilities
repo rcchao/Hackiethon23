@@ -1,31 +1,32 @@
 import numpy as np
 
 PROB_INCR_1 = 1
-PROB_INCR_2 = 2
-# (y, x) format of coords, starting from top left
+PROB_INCR_2 = 5
+
 # Initialize the game board
 board_size = 10
-game_board = np.zeros((board_size, board_size))
-
+game_board = np.zeros((board_size,board_size))
 
 # Initialize the ships
 ships = [5, 3, 3, 2, 2]
 
 # Initialize the bombed positions
-failed_bombed_positions = [(0,0), (3,3), (5,5)]
-successful_bombed_positions = [(9,3)]
+failed_bombed_positions = [(3,5)]
+successful_bombed_positions = [(5,5)]
+all_bombed_positions = [(3,5), (5,5)]
 
 # For each successful bomb, the surrounding squares increase in probability
 def increase_surrounding_correct_bombs(pdf, successful_bombed_positions):
     for successful_bomb in successful_bombed_positions:
         if (successful_bomb[1] + 1) < 10:
             pdf[successful_bomb[0], successful_bomb[1] + 1] += PROB_INCR_2
-        if (successful_bomb[1] - 1) >= 0:
+        if (successful_bomb[1] - 1) > 0:
             pdf[successful_bomb[0], successful_bomb[1] - 1] += PROB_INCR_2
         if (successful_bomb[0] + 1) < 10:
             pdf[successful_bomb[0] + 1, successful_bomb[1]] += PROB_INCR_2
-        if (successful_bomb[0] - 1) >= 0:
+        if (successful_bomb[0] - 1) > 0:
             pdf[successful_bomb[0] - 1, successful_bomb[1]] += PROB_INCR_2
+    
     return pdf
 
 def update_probabilities(game_board, ships, failed_bombed_positions, successful_bombed_positions):
@@ -39,14 +40,16 @@ def update_probabilities(game_board, ships, failed_bombed_positions, successful_
 
     # For each position in the game board
     # The .shape attribute is a built-in attribute of the numpy ndarray object, 
-    # The .shape attribute of game_board would then automatically be a tuple (board_size, board_size)
+    # The .shape attribute of game_board is a tuple (board_size, board_size)
     for i in range(game_board.shape[0]):
         for j in range(game_board.shape[1]):
+            
             # If the position has been bombed, skip it
-            if (i, j) in failed_bombed_positions or (i,j) in successful_bombed_positions:
+            if (i, j) in all_bombed_positions:
                 pdf[i, j] = 0;
+                #print(f"The coord 5,5 is: {pdf[5,5]}")
                 continue
-
+                
             # For each ship, check all possible positions for the ship
             for ship in ships:
                 
@@ -55,25 +58,29 @@ def update_probabilities(game_board, ships, failed_bombed_positions, successful_
                 # Check that no part of a potential ship placement overlaps with
                 # a bombed position
                 if i + ship <= game_board.shape[0] and \
-                not any ((x,j) in failed_bombed_positions for x in range(i,i+ship)):  
+                not any ((x,j) in all_bombed_positions for x in range(i,i+ship)):  
                     # Increment the probability for each square in the vertical line downwards
                     # from (i,j)
                     pdf[i:i+ship, j] += PROB_INCR_1
+                    #print(f"The coord 5,5 is: {pdf[5,5]}")
                 
                 # horizontal right
                 if j + ship <= game_board.shape[1] and \
-                not any((i,y) in failed_bombed_positions for y in range(j,j+ship)):
+                not any((i,y) in all_bombed_positions for y in range(j,j+ship)):
                     pdf[i, j:j+ship] += PROB_INCR_1
+                    #print(f"The coord 5,5 is: {pdf[5,5]}")
                 
                 # vertical up
                 if i - ship >= -1 and \
-                not any((x,j) in failed_bombed_positions for x in range(i-ship+1,i+1)):
+                not any((x,j) in all_bombed_positions for x in range(i-ship+1,i+1)):
                     pdf[i-ship+1:i+1, j] += PROB_INCR_1
+                    print(f"The coord 5,5 is: {pdf[5,5]}")
                 
                 # horizontal left
                 if j - ship >= -1 and \
-                not any((i,y) in failed_bombed_positions for y in range(j-ship+1,j+1)):
+                not any((i,y) in all_bombed_positions for y in range(j-ship+1,j+1)):
                     pdf[i, j-ship+1:j+1] += PROB_INCR_1
+                    print(f"The coord 5,5 is: {pdf[5,5]}")
 
     return pdf
 
@@ -82,5 +89,13 @@ def update_probabilities(game_board, ships, failed_bombed_positions, successful_
 # Call the function to update the probabilities
 prob_board = update_probabilities(game_board, ships, failed_bombed_positions, successful_bombed_positions)
 print("Final board:")
+
 # below SWAPS axes before printing, in order to have (x, y) format
 print(np.swapaxes(prob_board, 0, 1))
+
+# Get the index of the maximum value in the board
+max_coord = np.unravel_index(np.argmax(prob_board), prob_board.shape)
+
+print(f"The coordinates of the biggest value in the board are {max_coord}")
+print(f"The x coord of the biggest value in the board is {max_coord[0]}")
+print(f"The y coord of the biggest value in the board is {max_coord[1]}")
