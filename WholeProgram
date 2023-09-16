@@ -22,7 +22,7 @@ def increase_surrounding_correct_bombs(pdf, successful_bombed_positions, failed_
     
     return pdf
 
-def update_probabilities(game_board, ships, failed_bombed_positions, successful_bombed_positions):
+def update_probabilities(game_board, ships, failed_bombed_positions, successful_bombed_positions, all_bombed_positions):
     # Initialize the probability density function
     pdf = np.zeros_like(game_board)
     
@@ -95,7 +95,7 @@ def ShipLogic(round, yourMap, yourHp, enemyHp, p1ShotSeq, p1PrevHit, storage):
     # Initialize the ships
     ships = [5, 3, 3, 2, 2]
     prob_board = update_probabilities(game_board, ships, \
-        failed_bombed_positions, successful_bombed_positions)
+        failed_bombed_positions, successful_bombed_positions, all_bombed_positions)
    
     #Step 3: find highest probability
     max_coord = np.unravel_index(np.argmax(prob_board), prob_board.shape)
