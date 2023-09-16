@@ -2,10 +2,11 @@ import numpy as np
 
 PROB_INCR_1 = 1
 PROB_INCR_2 = 2
-
+# (y, x) format of coords, starting from top left
 # Initialize the game board
 board_size = 10
-game_board = np.zeros((board_size,board_size))
+game_board = np.zeros((board_size, board_size))
+
 
 # Initialize the ships
 ships = [5, 3, 3, 2, 2]
@@ -15,21 +16,16 @@ failed_bombed_positions = [(0,0), (3,3), (5,5)]
 successful_bombed_positions = [(9,3)]
 
 # For each successful bomb, the surrounding squares increase in probability
-def increase_surrounding_correct_bombs(pdf, successful_bombed_positions, failed_bombed_positions):
+def increase_surrounding_correct_bombs(pdf, successful_bombed_positions):
     for successful_bomb in successful_bombed_positions:
-        if (successful_bomb[1] + 1) < 10 and \
-        (successful_bomb[0], successful_bomb[1] + 1) not in failed_bombed_positions:
+        if (successful_bomb[1] + 1) < 10:
             pdf[successful_bomb[0], successful_bomb[1] + 1] += PROB_INCR_2
-        if (successful_bomb[1] - 1) > 0 and \
-        (successful_bomb[0], successful_bomb[1] - 1) not in failed_bombed_positions:
+        if (successful_bomb[1] - 1) >= 0:
             pdf[successful_bomb[0], successful_bomb[1] - 1] += PROB_INCR_2
-        if (successful_bomb[0] + 1) < 10 and \
-        (successful_bomb[0] + 1, successful_bomb[1]) not in failed_bombed_positions:
+        if (successful_bomb[0] + 1) < 10:
             pdf[successful_bomb[0] + 1, successful_bomb[1]] += PROB_INCR_2
-        if (successful_bomb[0] - 1) > 0 and \
-        (successful_bomb[0] - 1, successful_bomb[1]) not in failed_bombed_positions:
+        if (successful_bomb[0] - 1) >= 0:
             pdf[successful_bomb[0] - 1, successful_bomb[1]] += PROB_INCR_2
-    
     return pdf
 
 def update_probabilities(game_board, ships, failed_bombed_positions, successful_bombed_positions):
@@ -86,4 +82,5 @@ def update_probabilities(game_board, ships, failed_bombed_positions, successful_
 # Call the function to update the probabilities
 prob_board = update_probabilities(game_board, ships, failed_bombed_positions, successful_bombed_positions)
 print("Final board:")
-print(prob_board)
+# below SWAPS axes before printing, in order to have (x, y) format
+print(np.swapaxes(prob_board, 0, 1))
