@@ -25,8 +25,6 @@ def increase_surrounding_correct_bombs(pdf, successful_bombed_positions, failed_
 def update_probabilities(game_board, ships, failed_bombed_positions, successful_bombed_positions):
     # Initialize the probability density function
     pdf = np.zeros_like(game_board)
-    print("Initial board:")
-    print(pdf)
     
     # For each successful bomb, the surrounding squares increase in probability
     increase_surrounding_correct_bombs(pdf, successful_bombed_positions)
@@ -40,7 +38,6 @@ def update_probabilities(game_board, ships, failed_bombed_positions, successful_
             # If the position has been bombed, skip it
             if (i, j) in all_bombed_positions:
                 pdf[i, j] = 0;
-                #print(f"The coord 5,5 is: {pdf[5,5]}")
                 continue
                 
             # For each ship, check all possible positions for the ship
@@ -55,25 +52,21 @@ def update_probabilities(game_board, ships, failed_bombed_positions, successful_
                     # Increment the probability for each square in the vertical line downwards
                     # from (i,j)
                     pdf[i:i+ship, j] += PROB_INCR_1
-                    #print(f"The coord 5,5 is: {pdf[5,5]}")
                 
                 # horizontal right
                 if j + ship <= game_board.shape[1] and \
                 not any((i,y) in all_bombed_positions for y in range(j,j+ship)):
                     pdf[i, j:j+ship] += PROB_INCR_1
-                    #print(f"The coord 5,5 is: {pdf[5,5]}")
                 
                 # vertical up
                 if i - ship >= -1 and \
                 not any((x,j) in all_bombed_positions for x in range(i-ship+1,i+1)):
                     pdf[i-ship+1:i+1, j] += PROB_INCR_1
-                    print(f"The coord 5,5 is: {pdf[5,5]}")
                 
                 # horizontal left
                 if j - ship >= -1 and \
                 not any((i,y) in all_bombed_positions for y in range(j-ship+1,j+1)):
                     pdf[i, j-ship+1:j+1] += PROB_INCR_1
-                    print(f"The coord 5,5 is: {pdf[5,5]}")
 
     return pdf
 
