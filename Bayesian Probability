@@ -1,1 +1,26 @@
+# Initialize prior probabilities
+prior_probabilities = [[?? for i in range(mapCols)] for j in range(mapRows)]
+
+# Example usage within the game loop
+is_hit = ?? # Replace with actual game result (True for hit, False for miss)
+# Get the coordinates of the shot (bombX and bombY)
+i, j = bombX, bombY
+
+# Define a function for Bayesian update
+def bayesian_probability(prior_probability, is_hit):
+    if is_hit:
+        # Reduce the probability after a hit
+        likelihood = ??  
+    else:
+        # Reduce the probability after a miss
+        likelihood = ?? 
+
+    posterior_probability = prior_probability * likelihood
+    return posterior_probability
+
+# Update the prior probability at the shot coordinates
+prior_probabilities[i][j] = bayesian_probability(prior_probabilities[i][j], is_hit)
+
+# Choose the next target coordinate based on the highest posterior probability
+next_target = np.??(np.??(prior_probabilities), (mapRows, mapCols))
 
