@@ -10,13 +10,13 @@ def increase_surrounding_correct_bombs(pdf, successful_bombed_positions, all_bom
         if (successful_bomb[1] + 1) < 10 and \
         (successful_bomb[0], successful_bomb[1] + 1) not in all_bombed_positions:
             pdf[successful_bomb[0], successful_bomb[1] + 1] += PROB_INCR_2
-        if (successful_bomb[1] - 1) > 0 and \
+        if (successful_bomb[1] - 1) >= 0 and \
         (successful_bomb[0], successful_bomb[1] - 1) not in all_bombed_positions:
             pdf[successful_bomb[0], successful_bomb[1] - 1] += PROB_INCR_2
         if (successful_bomb[0] + 1) < 10 and \
         (successful_bomb[0] + 1, successful_bomb[1]) not in all_bombed_positions:
             pdf[successful_bomb[0] + 1, successful_bomb[1]] += PROB_INCR_2
-        if (successful_bomb[0] - 1) > 0 and \
+        if (successful_bomb[0] - 1) >= 0 and \
         (successful_bomb[0] - 1, successful_bomb[1]) not in all_bombed_positions:
             pdf[successful_bomb[0] - 1, successful_bomb[1]] += PROB_INCR_2
     
