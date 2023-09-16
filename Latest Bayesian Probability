@@ -1,1 +1,100 @@
+# Check for corners and edges
+if ship == 5:
+    # Check if ship of size 5 can fit in the corners or edges
+    if i == 0 and j == 0:
+        pdf[i:i+ship, j:j+ship] += PROB_INCR_2
+    # Checks top-left corner of the game board
+    elif i == 0 and j + ship == game_board.shape[1]:
+        pdf[i:i+ship, j-ship+1:j+1] += PROB_INCR_2
+    # Checks top-right corner of the game board
+    elif i + ship == game_board.shape[0] and j == 0:
+        pdf[i-ship+1:i+1, j:j+ship] += PROB_INCR_2
+    # Checks bottom-left corner of the game board
+    elif i + ship == game_board.shape[0] and j + ship == game_board.shape[1]:
+        pdf[i-ship+1:i+1, j-ship+1:j+1] += PROB_INCR_2
+    # Checks bottom-right corner of the board
+elif ship == 3:
+    # Check if ship of size 3 can fit in the corners or edges
+    if i == 0 and j == 0:
+        pdf[i:i+ship, j:j+ship] += PROB_INCR_2
+    elif i == 0 and j + ship == game_board.shape[1]:
+        pdf[i:i+ship, j-ship+1:j+1] += PROB_INCR_2
+    elif i + ship == game_board.shape[0] and j == 0:
+        pdf[i-ship+1:i+1, j:j+ship] += PROB_INCR_2
+    elif i + ship == game_board.shape[0] and j + ship == game_board.shape[1]:
+        pdf[i-ship+1:i+1, j-ship+1:j+1] += PROB_INCR_2
+elif ship == 2:
+    # Check if ship of size 2 can fit in the corners or edges
+    if i == 0 and j == 0:
+        pdf[i:i+ship, j:j+ship] += PROB_INCR_2
+    elif i == 0 and j + ship == game_board.shape[1]:
+        pdf[i:i+ship, j-ship+1:j+1] += PROB_INCR_2
+    elif i + ship == game_board.shape[0] and j == 0:
+        pdf[i-ship+1:i+1, j:j+ship] += PROB_INCR_2
+    elif i + ship == game_board.shape[0] and j + ship == game_board.shape[1]:
+        pdf[i-ship+1:i+1, j-ship+1:j+1] += PROB_INCR_2
+
+
+
+
+
+—-----------------------
+import numpy as np
+import random
+
+# Define constants
+PROB_INCR_1 = 1
+PROB_INCR_2 = 5
+
+BAYESIAN_HIT_LIKELIHOOD = 0.8  # Likelihood of a hit based on Bayesian Probability
+BAYESIAN_MISS_LIKELIHOOD = 0.2  # Likelihood of a miss based on Bayesian Probability
+
+#not sure about these numbers
+
+# ... existing code
+
+def update_probabilities_bayesian(game_board, ships, successful_bombed_positions, all_bombed_positions):
+    # Initialize the probability density function
+    pdf = np.zeros_like(game_board)
+
+    # For each successful bomb, the surrounding squares increase in probability
+    increase_surrounding_correct_bombs(pdf, successful_bombed_positions, all_bombed_positions)
+
+    # For each position in the game board
+    for i in range(game_board.shape[0]):
+        for j in range(game_board.shape[1]):
+            if (i, j) in all_bombed_positions:
+                pdf[i, j] = 0
+                continue
+
+            # Initialize Bayesian likelihood based on whether it's a hit or miss
+            likelihood = BAYESIAN_HIT_LIKELIHOOD if (i, j) in successful_bombed_positions else BAYESIAN_MISS_LIKELIHOOD
+
+            # For each ship, check all possible positions for the ship
+            for ship in ships:
+                # … existing code 
+
+                # Update probability based on Bayesian likelihood
+                pdf[i:i + ship, j:j + ship] += PROB_INCR_1 * likelihood
+
+    return pdf
+
+# ... existing code
+
+while yourHp > 0 or enemyHp > 0:
+    # ...  existing code
+
+    # Step 2: Update probabilities with Bayesian Probability
+    prob_board = update_probabilities_bayesian(game_board, ships, successful_bombed_positions, all_bombed_positions)
+
+    # Step 3: Find the highest probability
+    max_coord = np.unravel_index(np.argmax(prob_board), prob_board.shape)
+
+    # Choose the next target coordinate based on the highest probability
+    x = max_coord[1]
+    y = max_coord[0]
+    storage.append((0,(x,y)))
+    
+    return [x,y], storage
+
 
