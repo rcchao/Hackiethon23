@@ -1,4 +1,5 @@
 # Hackiethon23
 Hackmelb hackiethon 2023
 
-numpy library used
+The "Submission" and "Battleship" code are the same, run either one
+numpy library was used
