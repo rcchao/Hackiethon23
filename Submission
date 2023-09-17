@@ -82,7 +82,6 @@ def update_probabilities(game_board, ships, all_bombed):
             # For each ship, check all possible positions for the ship
             for ship in ships:
                
-                
                 # For each direction:
                 # Check that we are within the bounds of the board and
                 # Check that no part of a potential ship placement overlaps with
