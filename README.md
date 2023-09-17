@@ -1,5 +1,4 @@
 # Hackiethon23
 Hackmelb hackiethon 2023
 
-The "Submission" and "Battleship" code are the same, run either one. Also,
-numpy library was used
+Numpy library was used. Our final function for ShipLogic is in battleship.py
